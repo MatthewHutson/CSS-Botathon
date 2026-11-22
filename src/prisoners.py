@@ -93,9 +93,9 @@ class Dilemma(discord.Cog):
     async def dilemma(self, ctx: discord.ApplicationContext, member: discord.Member) -> None:
         global player1, player2, channel1, channel2, total_players
         total_players += 2
-        player1 = await ctx.author
+        player1 = ctx.author
         channel1 = await player1.create_dm()
         await channel1.send('Which will you pick:', view=OptionView())
-        player2 = await member
+        player2 = member
         channel2 = await player2.create_dm()
         await channel2.send(f'{ctx.author._user.display_name} has challenged you\nWhich will you pick:', view=OptionView())
