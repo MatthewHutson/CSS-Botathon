@@ -33,5 +33,8 @@ class Dilemma(discord.Cog):
         print("Dilemma Cog is loaded")
     
     @discord.slash_command(description='Start a Dilemma')
-    async def dilemma(self, ctx: discord.ApplicationContext) -> None:
-        await ctx.respond('Here is a dropdown:', view=OptionView(), ephemeral=True)
+    async def dilemma(self, ctx: discord.ApplicationContext, member: discord.Member) -> None:
+        prisoner1 = await ctx.author.create_dm()
+        await prisoner1.send('Which will you pick:', view=OptionView())
+        prisoner2 = await member.create_dm()
+        await prisoner2.send(f'{ctx.author._user.display_name} has challenged you\nWhich will you pick:', view=OptionView())
