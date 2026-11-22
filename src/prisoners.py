@@ -9,6 +9,12 @@ from bot import *
 # si 2/2  -2/4
 # sp 4/-2  0/0
 
+global ans, player1, player2, index
+ans = ["", ""]
+player1 = 0
+player2 = 0
+index = 0
+
 client = BotHandler()
 
 class OptionSelect(discord.ui.Select):
@@ -19,8 +25,38 @@ class OptionSelect(discord.ui.Select):
         ]
         super().__init__(placeholder='Pick an Option', options=options)
 
+    async def checkAns(self):
+        global ans, player1, player2, index
+        if index >= 2:
+            if ans[0] == ans[1]:
+                if ans[0] == "Stay Silent":
+                    await player1.send("You both stayed silent\nYou both are locked up for 3 years")
+                    await player2.send("You both stayed silent\nYou both are locked up for 3 years")
+                elif ans[0] == "Snitch":
+                    await player1.send("You both snitched\nYou both are locked up for 5 years")
+                    await player2.send("You both snitched\nYou both are locked up for 5 years")
+                else:
+                    raise Exception("INVALID CHOICES")
+            else:
+                if ans[0] == "Stay Silent":
+                    await player1.send("Your partner betrayed you\nYou both are locked up for 7 years")
+                    await player2.send("You betrayed your partner\nYou are locked up for 1 years")
+                elif ans[0] == "Snitch":
+                    await player1.send("You betrayed your partner\nYou are locked up for 1 years")
+                    await player2.send("Your partner betrayed you\nYou both are locked up for 7 years")
+                else:
+                    raise Exception("INVALID CHOICES")
+            index = 0
+            ans = ["", ""]
+
+
     async def callback(self, interaction: discord.Interaction) -> None:
+        global ans, player1, player2, index
         await interaction.response.send_message(f'You picked {self.values[0]}!')
+        if (index < 2):
+            ans[index] = self.values[0]
+            index += 1
+        await self.checkAns()
 
 class OptionView(discord.ui.View):
     def __init__(self) -> None:
@@ -33,5 +69,9 @@ class Dilemma(discord.Cog):
         print("Dilemma Cog is loaded")
     
     @discord.slash_command(description='Start a Dilemma')
-    async def dilemma(self, ctx: discord.ApplicationContext) -> None:
-        await ctx.respond('Here is a dropdown:', view=OptionView(), ephemeral=True)
+    async def dilemma(self, ctx: discord.ApplicationContext, member: discord.Member) -> None:
+        global player1, player2
+        player1 = await ctx.author.create_dm()
+        await player1.send('Which will you pick:', view=OptionView())
+        player2 = await member.create_dm()
+        await player2.send(f'{ctx.author._user.display_name} has challenged you\nWhich will you pick:', view=OptionView())
