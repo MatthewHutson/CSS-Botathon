@@ -29,8 +29,8 @@ class OptionSelect(discord.ui.Select):
 
     async def checkAns(self):
         global ans, player1, player2, index
-        user_1 = load_data(player1)
-        user_2 = load_data(player2)
+        user_1 = load_data(player1._user)
+        user_2 = load_data(player2._user)
 
         user_1.total_rounds += 1
         user_2.total_rounds += 1
@@ -89,7 +89,9 @@ class Dilemma(discord.Cog):
     @discord.slash_command(description='Start a Dilemma')
     async def dilemma(self, ctx: discord.ApplicationContext, member: discord.Member) -> None:
         global player1, player2
-        player1 = await ctx.author.create_dm()
-        await player1.send('Which will you pick:', view=OptionView())
-        player2 = await member.create_dm()
-        await player2.send(f'{ctx.author._user.display_name} has challenged you\nWhich will you pick:', view=OptionView())
+        player1 = await ctx.author
+        channel1 = await player1.create_dm()
+        await channel1.send('Which will you pick:', view=OptionView())
+        player2 = await member
+        channel2 = await player2.create_dm()
+        await channel2.send(f'{ctx.author._user.display_name} has challenged you\nWhich will you pick:', view=OptionView())
