@@ -1,5 +1,6 @@
 # -- Imports -- #
 from dataclasses import dataclass
+from typing import Any
 import discord
 
 # -- Classes -- #
@@ -25,3 +26,12 @@ class User():
         # -- Loaded Data Handler -- #
         for key, value in kwargs.items():
             self.__setattr__(key, value)
+
+    def to_dict(self) -> dict[str, Any]:
+        out: dict = {}
+
+        for key, value in self.__dict__.items():
+            if key != "discord_user":
+                out[key] = value
+
+        return out
