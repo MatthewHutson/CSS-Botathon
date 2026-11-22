@@ -12,7 +12,11 @@ class User():
 
     # -- Properties -- #
     @property
-    def average_score(self) -> int: return self.total_score / self.total_rounds
+    def average_score(self) -> float: 
+        if self.total_rounds != 0:
+            return self.total_score / self.total_rounds
+        else:
+            return 0
 
     @property
     def id(self) -> int: return self.discord_user.id

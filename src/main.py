@@ -24,6 +24,12 @@ async def on_ready() -> None:
 async def dilemma(ctx: discord.ApplicationContext) -> None:
     await ctx.respond('Here is a dropdown:', view=OptionView(), ephemeral=True)
 
+@client.slash_command(description='Get Your Average Score Per Game')
+async def get_score(ctx: discord.ApplicationContext) -> None:
+    discord_user = ctx.author
+    user: User = load_data(discord_user)
+    await ctx.respond(f'Your average score per game is {user.average_score}!')
+
 # -- Main -- #
 if __name__ == "__main__":
     load_dotenv()
