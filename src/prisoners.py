@@ -11,13 +11,14 @@ from save_handler import *
 # si 2/2  -2/4
 # sp 4/-2  0/0
 
-global ans, player1, player2, index
+global ans, player1, player2, channel1, channel2, index
 ans = ["", ""]
 player1 = 0
 player2 = 0
+channel1 = 0
+channel2 = 0
 index = 0
 total_players = 0
-
 client = BotHandler()
 
 class OptionSelect(discord.ui.Select):
@@ -30,7 +31,6 @@ class OptionSelect(discord.ui.Select):
 
     async def checkAns(self):
         global ans, player1, player2, index, total_players
-
         user_1 = load_data(player1._user)
         user_2 = load_data(player2._user)
 
@@ -40,26 +40,26 @@ class OptionSelect(discord.ui.Select):
         if index >= total_players:
             if ans[0] == ans[1]:
                 if ans[0] == "Stay Silent":
-                    await player1.send("You both stayed silent\nYou both are locked up for 3 years (+2 points)")
-                    await player2.send("You both stayed silent\nYou both are locked up for 3 years (+2 points)")
+                    await channel1.send("You both stayed silent\nYou both are locked up for 3 years (+2 points)")
+                    await channel2.send("You both stayed silent\nYou both are locked up for 3 years (+2 points)")
                     user_1.total_score += 2
                     user_2.total_score += 2
                 elif ans[0] == "Snitch":
-                    await player1.send("You both snitched\nYou both are locked up for 5 years (+0 points)")
-                    await player2.send("You both snitched\nYou both are locked up for 5 years (+0 points)")
+                    await channel1.send("You both snitched\nYou both are locked up for 5 years (+0 points)")
+                    await channel2.send("You both snitched\nYou both are locked up for 5 years (+0 points)")
                     user_1.total_score += 0
                     user_2.total_score += 0
                 else:
                     raise Exception("INVALID CHOICES")
             else:
                 if ans[0] == "Stay Silent":
-                    await player1.send("Your partner betrayed you\nYou both are locked up for 7 years (-2 points)")
-                    await player2.send("You betrayed your partner\nYou are locked up for 1 years (+4 points)")
+                    await channel1.send("Your partner betrayed you\nYou both are locked up for 7 years (-2 points)")
+                    await channel2.send("You betrayed your partner\nYou are locked up for 1 years (+4 points)")
                     user_1.total_score -= 2
                     user_2.total_score += 4
                 elif ans[0] == "Snitch":
-                    await player1.send("You betrayed your partner\nYou are locked up for 1 years (+4 points")
-                    await player2.send("Your partner betrayed you\nYou both are locked up for 7 years (-2 points)")
+                    await channel1.send("You betrayed your partner\nYou are locked up for 1 years (+4 points")
+                    await channel2.send("Your partner betrayed you\nYou both are locked up for 7 years (-2 points)")
                     user_1.total_score += 2
                     user_2.total_score -= 2
                 else:
@@ -91,7 +91,7 @@ class Dilemma(discord.Cog):
     
     @discord.slash_command(description='Start a Dilemma')
     async def dilemma(self, ctx: discord.ApplicationContext, member: discord.Member) -> None:
-        global player1, player2, total_players
+        global player1, player2, channel1, channel2, total_players
         total_players += 2
         player1 = await ctx.author
         channel1 = await player1.create_dm()
