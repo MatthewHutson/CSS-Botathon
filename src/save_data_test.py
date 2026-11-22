@@ -1,6 +1,6 @@
 # -- Imports -- #
 import save_handler
-from main import BotHandler
+from bot import BotHandler
 import discord
 from dotenv import load_dotenv
 import user_class
