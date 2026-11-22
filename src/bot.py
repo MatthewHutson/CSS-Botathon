@@ -3,11 +3,11 @@ from __future__ import annotations
 import discord
 import os 
 from dotenv import load_dotenv
-from backend.save_handler import *
-from backend.user_class import *
+import save_handler as save_handler
+import user_class as user_class
 
 # -- Classes -- #
-class BotHandler(discord.Client):
+class BotHandler(discord.Bot):
     # -- Attributes -- #
     log_channel: discord.abc.Guild | discord.Thread | discord.abc.PrivateChannel
 
@@ -42,18 +42,3 @@ class BotHandler(discord.Client):
     async def log(self, message: str) -> None:
         print(self.log_channel)
         await self.log_channel.send(message)
-
-# -- Global Objects -- #
-client = BotHandler()
-
-# -- Events -- #
-@client.event
-async def on_ready() -> None:
-    await client.get_log()
-    loaded_message: str = f'{client.user} has connected to Discord!\n'
-    await client.log(loaded_message)
-
-# -- Main -- #
-if __name__ == "__main__":
-    load_dotenv()
-    client.activate()

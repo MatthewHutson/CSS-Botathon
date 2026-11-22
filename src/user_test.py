@@ -1,5 +1,5 @@
 # -- Imports -- #
-from backend.user_class import *
+from CSSBotathon.src.user_class import *
 from bot.main import BotHandler
 
 # -- Globals -- #

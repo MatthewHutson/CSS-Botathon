@@ -1,7 +1,7 @@
 # -- Imports -- #
 import json
 import os
-from save_handler import User
+from user_class import User
 from typing import Any
 from discord import Client
 
