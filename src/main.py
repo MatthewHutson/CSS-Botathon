@@ -3,11 +3,11 @@ from __future__ import annotations
 import discord
 import os 
 from dotenv import load_dotenv
-from backend.save_handler import *
-from backend.user_class import *
+from save_handler import *
+from user_class import *
 
 # -- Classes -- #
-class BotHandler(discord.Client):
+class BotHandler(discord.Bot):
     # -- Attributes -- #
     log_channel: discord.abc.Guild | discord.Thread | discord.abc.PrivateChannel
 
@@ -40,7 +40,6 @@ class BotHandler(discord.Client):
         self.log_channel = channel
 
     async def log(self, message: str) -> None:
-        print(self.log_channel)
         await self.log_channel.send(message)
 
 # -- Global Objects -- #

@@ -1,9 +1,9 @@
 # -- Imports -- #
 import json
 import os
-from save_handler import User
+from user_class import User
 from typing import Any
-from discord import Client
+import discord
 
 # -- Globals -- #
 PATH: str = "save_data/"
@@ -16,19 +16,17 @@ def get_path(id: int) -> str:
 
 def save_data(user: User) -> None:
     # -- Data Handling -- #
-    data: dict[str, Any] = user.__dict__
-    data.pop("discord_user")
+    data: dict[str, Any] = user.to_dict()
 
     # -- JSON Dumping -- #
-    file_path: str =  get_path(user.id)
+    file_path: str = get_path(user.id)
 
     with open(file_path, "w") as file:
         json.dump(obj = data, fp = file)
 
-def load_data(id: int, client: Client) -> User:
+def load_data(discord_user: discord.User) -> User:
     # -- Info -- #
-    file_path: str =  get_path(id)
-    discord_user = client.get_user(id)
+    file_path: str = get_path(discord_user.id)
 
     if os.path.exists(file_path):
         # -- File Handling -- #
