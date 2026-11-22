@@ -16,6 +16,7 @@ ans = ["", ""]
 player1 = 0
 player2 = 0
 index = 0
+total_players = 0
 
 client = BotHandler()
 
@@ -28,14 +29,15 @@ class OptionSelect(discord.ui.Select):
         super().__init__(placeholder='Pick an Option', options=options)
 
     async def checkAns(self):
-        global ans, player1, player2, index
+        global ans, player1, player2, index, total_players
+
         user_1 = load_data(player1._user)
         user_2 = load_data(player2._user)
 
         user_1.total_rounds += 1
         user_2.total_rounds += 1
 
-        if index >= 2:
+        if index >= total_players:
             if ans[0] == ans[1]:
                 if ans[0] == "Stay Silent":
                     await player1.send("You both stayed silent\nYou both are locked up for 3 years (+2 points)")
@@ -64,14 +66,15 @@ class OptionSelect(discord.ui.Select):
                     raise Exception("INVALID CHOICES")
             index = 0
             ans = ["", ""]
+            total_players = 0
 
             save_data(user_1)
             save_data(user_2)
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        global ans, player1, player2, index
+        global ans, player1, player2, index, total_players
         await interaction.response.send_message(f'You picked {self.values[0]}!')
-        if (index < 2):
+        if (index < total_players):
             ans[index] = self.values[0]
             index += 1
         await self.checkAns()
@@ -88,7 +91,8 @@ class Dilemma(discord.Cog):
     
     @discord.slash_command(description='Start a Dilemma')
     async def dilemma(self, ctx: discord.ApplicationContext, member: discord.Member) -> None:
-        global player1, player2
+        global player1, player2, total_players
+        total_players += 2
         player1 = await ctx.author
         channel1 = await player1.create_dm()
         await channel1.send('Which will you pick:', view=OptionView())
